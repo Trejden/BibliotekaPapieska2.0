@@ -1,19 +1,43 @@
 package Server;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Objects;
+
+import static Server.DatabaseConfig.*;
+import static Server.ServerMain.*;
 
 public class ServerConnectionWorker implements Runnable{
     protected Socket clientSocket = null;
     private boolean isAuthorized = false;
+    private int userRole = 0;
     public ServerConnectionWorker(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
 
-    private void HandleLoginCommand(JSONObject command) {
-
+    private void HandleLoginCommand(JSONObject command, PrintWriter  out) {
+        try{
+            Connection connection = connectToDatabase("jdbc:mysql://", DataBaseAddress + ":" + DataBasePort, "", "root", "root");
+            Statement st = createStatement(connection);
+            executeUpdate(st, "USE " + DataBaseName + ";");
+            JSONArray arguments = command.getJSONArray("Arguments");
+            ResultSet resultSet = executeQuery(st, UsersDataModel.GetSelectStatementByUserName(arguments.getString(0)));
+            String password = resultSet.getString(UsersDataModel.Password);
+            if(Objects.equals(password, arguments.getString(1))){
+                isAuthorized = true;
+                userRole = resultSet.getInt(UsersDataModel.UserRole);
+            }
+        }catch (Exception e)
+        {
+            System.out.println("Błąd przy obsłudze logowania");
+            e.printStackTrace();
+        }
     }
 
     public void run() {
@@ -28,7 +52,7 @@ public class ServerConnectionWorker implements Runnable{
                 switch (commandType){
                     case 0:
                         System.out.println("Otrzymano komende logowania");
-                        HandleLoginCommand(command);
+                        HandleLoginCommand(command, out);
                         break;
                     case 1:
                         System.out.println("Otrzymano komende utworzenia użytkownika");
