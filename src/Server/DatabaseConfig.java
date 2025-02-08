@@ -28,6 +28,11 @@ public class DatabaseConfig {
                     + "'" + password + "', "
                     + "'" + mail + "');";
         }
+        public static String GetSelectStatementByUserName(String userName) {
+            return "SELECT" + " (" + UserName + ", " + UserRole + ", " + Password + ", " + Mail + ")"
+                    + " FROM " + TableName
+                    + " WHERE " + UserName + " = " + userName;
+        }
     }
     public static class ReservationsDataModel {
         public static String TableName = "Reservations";
