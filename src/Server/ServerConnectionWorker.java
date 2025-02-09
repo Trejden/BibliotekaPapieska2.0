@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import static Server.DatabaseConfig.*;
 import static Server.ServerMain.*;
+import static Server.WebsocketHandlers.LoginHandler.HandleLoginCommand;
 
 public class ServerConnectionWorker implements Runnable{
     protected Socket clientSocket = null;
@@ -22,47 +23,10 @@ public class ServerConnectionWorker implements Runnable{
         this.clientSocket = clientSocket;
     }
 
-    private void HandleLoginCommand(JSONObject command, PrintWriter  out) {
-        try{
-            Connection connection = connectToDatabase("jdbc:mysql://", DataBaseAddress + ":" + DataBasePort, "", "root", "root");
-            Statement st = createStatement(connection);
-            executeUpdate(st, "USE " + DataBaseName + ";");
-            JSONArray arguments = command.getJSONArray("Arguments");
-            String sqlString = UsersDataModel.GetSelectStatementByUserName(arguments.getString(0));
-            System.out.println(sqlString);
-            ResultSet resultSet = executeQuery(st, sqlString);
-            if(resultSet == null)
-            {
-                WebSocketResponse response = new WebSocketResponse(-1, "login failure");
-                JSONObject responseJson = new JSONObject(response,new String[]{"Status", "Message"});
-                out.println(responseJson.toString());
-            }
-            else{
-                if(resultSet.next()) {
-                    String password = resultSet.getString(UsersDataModel.Password);
-                    if (Objects.equals(password, arguments.getString(1))) {
-                        isAuthorized = true;
-                        userRole = resultSet.getInt(UsersDataModel.UserRole);
-                        WebSocketResponse response = new WebSocketResponse(userRole, "login success");
-                        JSONObject responseJson = new JSONObject(response, new String[]{"Status", "Message"});
-                        out.println(responseJson.toString());
-                    }
-                } else {
-                    WebSocketResponse response = new WebSocketResponse(-1, "login failure");
-                    JSONObject responseJson = new JSONObject(response, new String[]{"Status", "Message"});
-                    out.println(responseJson.toString());
-                }
-
-            }
-
-        }catch (Exception e)
-        {
-            WebSocketResponse response = new WebSocketResponse(-1, "login failure");
-            JSONObject responseJson = new JSONObject(response, new String[]{"Status", "Message"});
-            out.println(responseJson.toString());
-            System.out.println("Błąd przy obsłudze logowania");
-            e.printStackTrace();
-        }
+    public void sendUnauthorizedResponse(PrintWriter  out){
+        WebSocketResponse response = new WebSocketResponse(-1, "unauthorized");
+        JSONObject responseJson = new JSONObject(response, new String[]{"Status", "Message"});
+        out.println(responseJson.toString());
     }
 
     public void run() {
@@ -78,13 +42,30 @@ public class ServerConnectionWorker implements Runnable{
                 switch (commandType){
                     case 0:
                         System.out.println("Otrzymano komende logowania");
-                        HandleLoginCommand(command, out);
+                        int authResult = HandleLoginCommand(command, out);
+                        if(authResult >= 0)
+                        {
+                            isAuthorized = true;
+                            userRole = authResult;
+                        }
                         break;
                     case 1:
                         System.out.println("Otrzymano komende utworzenia użytkownika");
+                        if(isAuthorized && (userRole == 0 || userRole == 1)) {
+                            //handle
+                        }
+                        else {
+                            sendUnauthorizedResponse(out);
+                        }
                         break;
                     case 2:
                         System.out.println("Otrzymano komende dodania książki");
+                        if(isAuthorized && (userRole == 0 || userRole == 1)) {
+                            //handle
+                        }
+                        else {
+                            sendUnauthorizedResponse(out);
+                        }
                         break;
                     default:
                         System.out.println("Nieznany typ komendy: " + commandType);
