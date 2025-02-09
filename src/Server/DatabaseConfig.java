@@ -29,9 +29,9 @@ public class DatabaseConfig {
                     + "'" + mail + "');";
         }
         public static String GetSelectStatementByUserName(String userName) {
-            return "SELECT" + " (" + UserName + ", " + UserRole + ", " + Password + ", " + Mail + ")"
+            return "SELECT" + " " + UserName + ", " + UserRole + ", " + Password + ", " + Mail
                     + " FROM " + TableName
-                    + " WHERE " + UserName + " = " + userName;
+                    + " WHERE " + UserName + " = '" + userName + "';";
         }
     }
     public static class ReservationsDataModel {
