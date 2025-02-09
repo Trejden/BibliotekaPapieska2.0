@@ -1,5 +1,6 @@
 package Server;
 
+import Common.WebSocketResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +17,7 @@ import static Server.ServerMain.*;
 public class ServerConnectionWorker implements Runnable{
     protected Socket clientSocket = null;
     private boolean isAuthorized = false;
-    private int userRole = 0;
+    private int userRole = -1;
     public ServerConnectionWorker(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
@@ -32,9 +33,20 @@ public class ServerConnectionWorker implements Runnable{
             if(Objects.equals(password, arguments.getString(1))){
                 isAuthorized = true;
                 userRole = resultSet.getInt(UsersDataModel.UserRole);
+                WebSocketResponse response = new WebSocketResponse(0, "login success");
+                JSONObject responseJson = new JSONObject(response);
+                out.println(responseJson.toString());
+            }
+            else {
+                WebSocketResponse response = new WebSocketResponse(1, "login failure");
+                JSONObject responseJson = new JSONObject(response);
+                out.println(responseJson.toString());
             }
         }catch (Exception e)
         {
+            WebSocketResponse response = new WebSocketResponse(1, "login failure");
+            JSONObject responseJson = new JSONObject(response);
+            out.println(responseJson.toString());
             System.out.println("Błąd przy obsłudze logowania");
             e.printStackTrace();
         }
