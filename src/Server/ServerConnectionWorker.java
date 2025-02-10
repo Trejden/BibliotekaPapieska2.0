@@ -67,6 +67,25 @@ public class ServerConnectionWorker implements Runnable{
                             sendUnauthorizedResponse(out);
                         }
                         break;
+                    case 3:
+                        System.out.println("Otrzymano komende przesłania listy książek");
+                        break;
+                    case 4:
+                        System.out.println("Otrzymano komendę rezerwacji książki");
+                        break;
+                    case 5:
+                        System.out.println("Otrzymano komendę sprawdzenia kar użytkownika");
+                        break;
+                    case 6:
+                        System.out.println("Otrzymano komendę naliczenia kary użytkownika");
+                        break;
+                    case 7:
+                        System.out.println("Otrzymano komendę odliczenia kary użytkownika");
+                        break;
+                    case 8:
+                        System.out.println("Otrzymano komendę aktualizacji danych użytkownika");
+                    case 9:
+                        System.out.println("Otrzymano komendę pobrania danych użytkownika");
                     default:
                         System.out.println("Nieznany typ komendy: " + commandType);
                         break;
