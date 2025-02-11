@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class LibraryClient {
     protected static boolean authorized = false;
     protected static int role = -1;
+    protected static String userName = "";
     protected static JFrame initialFrame = new JFrame();
     protected static JFrame afterLoginFrame = new JFrame();
     protected static JFrame loginFrame;
@@ -25,21 +26,24 @@ public class LibraryClient {
         JButton userData = new JButton("Konto");
         JButton browseButton = new JButton("Przeglądaj zbiory biblioteki Papieskiej");
 
-        // x axis, y axis, width, height
         userData.setBounds(10, 10, 220, 50);
         userData.addActionListener(new LoginFrameOpener());
         browseButton.setBounds(230, 10, 300, 50);
-        // adding button in JFrame
+
         afterLoginFrame.add(userData);
         afterLoginFrame.add(browseButton);
 
-        // 400 width and 500 height
-        afterLoginFrame.setSize(550, 100);
+        if(authorized && role == 0)
+        {
+            JButton manageUsersButton = new JButton("Zarządzaj użytkownikami");
+            manageUsersButton.setBounds(530, 10, 300, 50);
+            afterLoginFrame.add(manageUsersButton);
+        }
 
-        // using no layout managers
+        afterLoginFrame.setSize(850, 100);
+
         afterLoginFrame.setLayout(null);
 
-        // making the frame visible
         afterLoginFrame.setVisible(true);
     }
 
