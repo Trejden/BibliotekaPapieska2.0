@@ -46,9 +46,9 @@ public class LoginActionHandler implements ActionListener {
             {
                 authorized = true;
                 role = responseCode;
+                LibraryClient.userName = userNameValue;
                 openAfterLoginFrame();
                 loginFrame.setVisible(false);
-                //to do: add main view and initialize it here
             }
         } catch (Exception ex) {
             errorFrame = new JFrame();

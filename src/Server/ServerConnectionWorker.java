@@ -13,7 +13,9 @@ import java.util.Objects;
 
 import static Server.DatabaseConfig.*;
 import static Server.ServerMain.*;
-import static Server.WebsocketHandlers.LoginHandler.HandleLoginCommand;
+import static Server.WebsocketHandlers.AddNewUserHandler.*;
+import static Server.WebsocketHandlers.BookHandler.*;
+import static Server.WebsocketHandlers.LoginHandler.*;
 
 public class ServerConnectionWorker implements Runnable{
     protected Socket clientSocket = null;
@@ -52,7 +54,7 @@ public class ServerConnectionWorker implements Runnable{
                     case 1:
                         System.out.println("Otrzymano komende utworzenia użytkownika");
                         if(isAuthorized && (userRole == 0 || userRole == 1)) {
-                            //handle
+                            AddNewUser(command, out);
                         }
                         else {
                             sendUnauthorizedResponse(out);
@@ -61,7 +63,7 @@ public class ServerConnectionWorker implements Runnable{
                     case 2:
                         System.out.println("Otrzymano komende dodania książki");
                         if(isAuthorized && (userRole == 0 || userRole == 1)) {
-                            //handle
+                            AddBook(command, out);
                         }
                         else {
                             sendUnauthorizedResponse(out);
@@ -69,6 +71,7 @@ public class ServerConnectionWorker implements Runnable{
                         break;
                     case 3:
                         System.out.println("Otrzymano komende przesłania listy książek");
+                        GetAllBooks(out);
                         break;
                     case 4:
                         System.out.println("Otrzymano komendę rezerwacji książki");
