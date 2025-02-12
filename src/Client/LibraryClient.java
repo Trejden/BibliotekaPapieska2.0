@@ -16,6 +16,7 @@ public class LibraryClient {
     protected static String userName = "";
     protected static JFrame initialFrame = new JFrame();
     protected static JFrame afterLoginFrame = new JFrame();
+    protected static RentablesDisplay rentablesDisplayFrame = new RentablesDisplay();
     protected static JFrame loginFrame;
     protected static JFrame errorFrame;
     protected static Socket socket;
@@ -29,6 +30,7 @@ public class LibraryClient {
         userData.setBounds(10, 10, 220, 50);
         userData.addActionListener(new LoginFrameOpener());
         browseButton.setBounds(230, 10, 300, 50);
+        browseButton.addActionListener(new RentablesDisplay.RentablesDisplayOpener());
 
         afterLoginFrame.add(userData);
         afterLoginFrame.add(browseButton);
@@ -61,6 +63,7 @@ public class LibraryClient {
             loginButton.setBounds(10, 10, 220, 50);
             loginButton.addActionListener(new LoginFrameOpener());
             browseButton.setBounds(230, 10, 300, 50);
+            browseButton.addActionListener(new RentablesDisplay.RentablesDisplayOpener());
             // adding button in JFrame
             initialFrame.add(loginButton);
             initialFrame.add(browseButton);
