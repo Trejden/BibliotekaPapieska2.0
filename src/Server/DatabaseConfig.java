@@ -37,7 +37,7 @@ public class DatabaseConfig {
         }
         public static String GetSelectStatementAll(){
             return "SELECT" + " " + UserName + ", " + UserRole + ", " + Password + ", " + Mail
-                    + " FROM " + TableName + "';";
+                    + " FROM " + TableName + ";";
         }
     }
     public static class ReservationsDataModel {
@@ -69,7 +69,7 @@ public class DatabaseConfig {
                     + Id + " int AUTO_INCREMENT PRIMARY KEY, "
                     + IBAN + " varchar(255) NOT NULL, "
                     + Author + " varchar(255) NOT NULL, "
-                    + Title + " varchar(255) NOT NULL, "
+                    + Title + " varchar(255) NOT NULL "
                     + ");";
         }
         public static String GetSqlInsertString(String iban, String author, String title){
@@ -80,8 +80,8 @@ public class DatabaseConfig {
                     + "'" + title + "');";
         }
         public static String GetSelectStatementAll() {
-            return "SELECT" + " " + IBAN + ", " + Author + ", " + Title
-                    + " FROM " + TableName + "';";
+            return "SELECT" + " " + Id + ", " + IBAN + ", " + Author + ", " + Title
+                    + " FROM " + TableName + ";";
         }
         public static String GetSelectStatementFiltered(String iban, String author, String title){
             String sql = "SELECT" + " " + IBAN + ", " + Author + ", " + Title

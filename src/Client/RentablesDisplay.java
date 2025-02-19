@@ -51,15 +51,17 @@ public class RentablesDisplay extends JFrame {
         }
     }
 
-    JLabel label = new JLabel();
-
     public RentablesDisplay(){
         super();
         setSize(500, 500);
-        add(label, BorderLayout.SOUTH);
     }
     public void showWindowWithData(JSONArray data){
-        label.setText(data.toString());
+        setLayout(new GridLayout(20,1));
+        for(int i = 0; i < data.length(); i++)
+        {
+            String bookJson = data.getJSONObject(i).toString();
+            add(new JLabel(bookJson));
+        }
         setVisible(true);
     }
 }

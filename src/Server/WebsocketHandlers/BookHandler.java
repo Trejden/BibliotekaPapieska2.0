@@ -54,19 +54,24 @@ public class BookHandler {
             Connection connection = connectToDatabase("jdbc:mysql://", DataBaseAddress + ":" + DataBasePort, "", "root", "root");
             Statement st = createStatement(connection);
             executeUpdate(st, "USE " + DataBaseName + ";");
-            String sqlString = UsersDataModel.GetSelectStatementAll();
+            String sqlString = RentablesDataModel.GetSelectStatementAll();
             System.out.println(sqlString);
             ResultSet result = executeQuery(st, sqlString);
-            ArrayList<BookDto> bookList = new ArrayList<>();
+            JSONArray bookListJson = new JSONArray();
             if(result == null)
             {
                 sendActionFailedResponse(out);
                 return;
             }
             while ((result.next())){
-                bookList.add(new BookDto(result.getInt(RentablesDataModel.Id), result.getString(RentablesDataModel.IBAN), result.getString(RentablesDataModel.Title), result.getString(RentablesDataModel.Author)));
+                JSONObject book = new JSONObject();
+                book.put("Id", result.getInt(RentablesDataModel.Id));
+                book.put("IBAN", result.getString(RentablesDataModel.IBAN));
+                book.put("Title", result.getString(RentablesDataModel.Title));
+                book.put("Author", result.getString(RentablesDataModel.Author));
+                bookListJson.put(book);
             }
-            JSONArray bookListJson = new JSONArray(bookList);
+
             WebSocketResponse response = new WebSocketResponse(0, bookListJson.toString());
             JSONObject responseJson = new JSONObject(response, new String[]{"Status", "Message"});
             out.println(responseJson.toString());
