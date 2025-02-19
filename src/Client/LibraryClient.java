@@ -17,6 +17,7 @@ public class LibraryClient {
     protected static JFrame initialFrame = new JFrame();
     protected static JFrame afterLoginFrame = new JFrame();
     protected static RentablesDisplay rentablesDisplayFrame = new RentablesDisplay();
+    protected static UserDataDisplay userDataDisplayFrame = new UserDataDisplay();
     protected static JFrame loginFrame;
     protected static JFrame errorFrame;
     protected static Socket socket;
@@ -28,14 +29,14 @@ public class LibraryClient {
         JButton browseButton = new JButton("Przeglądaj zbiory biblioteki Papieskiej");
 
         userData.setBounds(10, 10, 220, 50);
-        userData.addActionListener(new LoginFrameOpener());
+        userData.addActionListener(new UserDataDisplay.DisplayOpener());
         browseButton.setBounds(230, 10, 300, 50);
         browseButton.addActionListener(new RentablesDisplay.RentablesDisplayOpener());
 
         afterLoginFrame.add(userData);
         afterLoginFrame.add(browseButton);
 
-        if(authorized && role == 0)
+        if(authorized && role == 1)
         {
             JButton manageUsersButton = new JButton("Zarządzaj użytkownikami");
             manageUsersButton.setBounds(530, 10, 300, 50);
@@ -47,6 +48,7 @@ public class LibraryClient {
         afterLoginFrame.setLayout(null);
 
         afterLoginFrame.setVisible(true);
+        afterLoginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public static void main(String[] args)

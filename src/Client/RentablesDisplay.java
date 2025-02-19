@@ -55,6 +55,7 @@ public class RentablesDisplay extends JFrame {
 
     public RentablesDisplay(){
         super();
+        setSize(500, 500);
         add(label, BorderLayout.SOUTH);
     }
     public void showWindowWithData(JSONArray data){

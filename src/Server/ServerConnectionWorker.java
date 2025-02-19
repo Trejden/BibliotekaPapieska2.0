@@ -89,6 +89,14 @@ public class ServerConnectionWorker implements Runnable{
                         System.out.println("Otrzymano komendę aktualizacji danych użytkownika");
                     case 9:
                         System.out.println("Otrzymano komendę pobrania danych użytkownika");
+                        if(isAuthorized)
+                        {
+                            GetUserData(command, out);
+                        }
+                        else{
+                            sendUnauthorizedResponse(out);
+                        }
+                        break;
                     default:
                         System.out.println("Nieznany typ komendy: " + commandType);
                         break;
